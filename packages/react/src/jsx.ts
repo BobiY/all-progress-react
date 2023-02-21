@@ -2,7 +2,7 @@
  * File: jsx.ts
  * Created Date: 2023-02-16 20:45:32
  * Author: yao
- * Last Modified: 2023-02-16 21:13:25
+ * Last Modified: 2023-02-20 21:12:40
  * describe：
  */
 import { REACT_ELEMENT_TYPE } from 'shared/ReactSymbols';
@@ -11,7 +11,7 @@ import {
 	Key,
 	Ref,
 	Props,
-	ReactElement,
+	ReactElementType,
 	ElementType
 } from 'shared/ReactTypes';
 
@@ -21,7 +21,7 @@ const ReactElement = function (
 	key: Key,
 	ref: Ref,
 	props: Props
-): ReactElement {
+): ReactElementType {
 	const element = {
 		$$typeof: REACT_ELEMENT_TYPE,
 		type,
@@ -33,7 +33,7 @@ const ReactElement = function (
 
 	return element;
 };
-
+// 生产环境下的调用的方法
 export const jsx = (type: ElementType, config: any, ...maybeChildren: any) => {
 	let key: Key = null;
 	const props: Props = {};
@@ -73,4 +73,33 @@ export const jsx = (type: ElementType, config: any, ...maybeChildren: any) => {
 	return ReactElement(type, key, ref, props);
 };
 
-export const jsxDEV = jsx;
+// 开发环境下的方法
+export const jsxDEV = (type: ElementType, config: any) => {
+	let key: Key = null;
+	const props: Props = {};
+	let ref: Ref = null;
+	console.log('config', config, type);
+
+	for (const prop in config) {
+		const val = config[prop];
+
+		if (prop === 'key') {
+			if (val !== undefined) {
+				key = '' + val;
+			}
+			continue;
+		}
+
+		if (prop === 'ref') {
+			if (val !== undefined) {
+				ref = val;
+			}
+		}
+
+		if ({}.hasOwnProperty.call(config, prop)) {
+			props[prop] = val;
+		}
+	}
+
+	return ReactElement(type, key, ref, props);
+};
