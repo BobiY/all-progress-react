@@ -2,7 +2,7 @@
  * File: jsx.ts
  * Created Date: 2023-02-16 20:45:32
  * Author: yao
- * Last Modified: 2023-02-20 21:12:40
+ * Last Modified: 2023-03-25 11:27:01
  * describe：
  */
 import { REACT_ELEMENT_TYPE } from 'shared/ReactSymbols';
@@ -53,6 +53,7 @@ export const jsx = (type: ElementType, config: any, ...maybeChildren: any) => {
 			if (val !== undefined) {
 				ref = val;
 			}
+			continue;
 		}
 
 		if ({}.hasOwnProperty.call(config, prop)) {
@@ -78,7 +79,6 @@ export const jsxDEV = (type: ElementType, config: any) => {
 	let key: Key = null;
 	const props: Props = {};
 	let ref: Ref = null;
-	console.log('config', config, type);
 
 	for (const prop in config) {
 		const val = config[prop];
@@ -103,3 +103,11 @@ export const jsxDEV = (type: ElementType, config: any) => {
 
 	return ReactElement(type, key, ref, props);
 };
+
+export function isValidElement(object: any) {
+	return (
+		typeof object === 'object' &&
+		object !== null &&
+		object.$$typeof === REACT_ELEMENT_TYPE
+	);
+}
