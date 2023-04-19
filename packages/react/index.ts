@@ -5,7 +5,7 @@ import currentDispatcher from './src/currentDispatcher';
  * File: index.ts
  * Created Date: 2023-02-16 20:45:20
  * Author: yao
- * Last Modified: 2023-03-25 11:27:37
+ * Last Modified: 2023-04-12 23:03:14
  * describe：React 包导出放到
  */
 export default {
@@ -24,6 +24,12 @@ export const useState: Dispatcher['useState'] = (initalState) => {
 	const dispatcher = resolveDispatcher();
 
 	return dispatcher.useState(initalState);
+};
+
+export const useEffect: Dispatcher['useEffect'] = (create, deps) => {
+	const dispatcher = resolveDispatcher();
+
+	return dispatcher.useEffect(create, deps);
 };
 
 // 内部数据共享层

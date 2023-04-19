@@ -2,10 +2,10 @@
  * File: jsx.ts
  * Created Date: 2023-02-16 20:45:32
  * Author: yao
- * Last Modified: 2023-03-25 11:27:01
+ * Last Modified: 2023-04-10 22:23:29
  * describe：
  */
-import { REACT_ELEMENT_TYPE } from 'shared/ReactSymbols';
+import { REACT_ELEMENT_TYPE, REACT_FRAGMENT_TYPE } from 'shared/ReactSymbols';
 import {
 	Type,
 	Key,
@@ -75,7 +75,7 @@ export const jsx = (type: ElementType, config: any, ...maybeChildren: any) => {
 };
 
 // 开发环境下的方法
-export const jsxDEV = (type: ElementType, config: any) => {
+export const jsxDEV = (type: ElementType, config: any, elekey: Key) => {
 	let key: Key = null;
 	const props: Props = {};
 	let ref: Ref = null;
@@ -94,11 +94,16 @@ export const jsxDEV = (type: ElementType, config: any) => {
 			if (val !== undefined) {
 				ref = val;
 			}
+			continue;
 		}
 
 		if ({}.hasOwnProperty.call(config, prop)) {
 			props[prop] = val;
 		}
+	}
+
+	if (elekey !== undefined) {
+		key = '' + elekey;
 	}
 
 	return ReactElement(type, key, ref, props);
@@ -111,3 +116,5 @@ export function isValidElement(object: any) {
 		object.$$typeof === REACT_ELEMENT_TYPE
 	);
 }
+
+export const Fragment = REACT_FRAGMENT_TYPE;

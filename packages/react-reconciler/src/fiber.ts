@@ -1,15 +1,22 @@
+import { Lane, Lanes, NoLane, NoLanes } from './fiberLanes';
 import { ReactElementType } from 'shared/ReactTypes';
 /**
  * File: fiber.ts
  * Created Date: 2023-02-21 20:32:54
  * Author: yao
- * Last Modified: 2023-03-21 22:50:16
+ * Last Modified: 2023-04-18 22:26:58
  * describe：fiber node
  */
 import { Props, Key } from 'shared/ReactTypes';
-import { workTag, FunctionComponent, HostComponent } from './workTags';
+import {
+	workTag,
+	FunctionComponent,
+	HostComponent,
+	Fragment
+} from './workTags';
 import { Flags, NoFlages } from './fiberFlags';
 import { Container } from 'hostConfig';
+import { Effect } from './fiberHooks';
 
 export class FiberNode {
 	tag: any;
@@ -31,10 +38,12 @@ export class FiberNode {
 
 	updateQueue: unknown;
 
+	deletions: FiberNode[] | null; // 用于记录那些子元素需要删除
+
 	constructor(tag: workTag, pendingProps: Props, key: Key) {
 		// 实例属性
 		this.tag = tag;
-		this.key = key;
+		this.key = key || null; // 兼容 fragment
 		// HostComponent <div> => 保存真实的 div DOM 节点
 		this.stateNode = null;
 		// fiber node 的类型
@@ -60,20 +69,36 @@ export class FiberNode {
 		this.alternate = null;
 		this.flags = NoFlages; // fiber Node 的计算出的操作类型 => 副作用
 		this.subtreeFlags = NoFlages;
+		this.deletions = null;
 	}
 }
 
+export interface PendingPassiveEffects {
+	unmount: Effect[];
+	update: Effect[];
+}
+
+// 掌控全局，记录当前渲染的 fiber 信息
 export class FiberRootNode {
 	// 宿主环境根节点
 	container: Container;
 	current: FiberNode;
 	// 更新完成后储存在这个字段中
 	finishedWork: FiberNode | null;
+	pendingLanes: Lanes; // 代表所有未被消费的 lane 集合
+	finishedLane: Lane; // 代表本次更新消费的 lane
+	pendingPassiveEffects: PendingPassiveEffects;
 	constructor(container: Container, hostRootFiber: FiberNode) {
 		this.container = container;
 		this.current = hostRootFiber;
 		hostRootFiber.stateNode = this;
 		this.finishedWork = null;
+		this.pendingLanes = NoLanes;
+		this.finishedLane = NoLane;
+		this.pendingPassiveEffects = {
+			unmount: [],
+			update: []
+		};
 	}
 }
 
@@ -99,6 +124,7 @@ export const createWorkInProcess = (
 	wip.child = current.child;
 	wip.memoizedState = current.memoizedState;
 	wip.memoizedProps = current.memoizedProps;
+	wip.deletions = null;
 	return wip;
 };
 
@@ -114,5 +140,10 @@ export function createFiberFromElement(element: ReactElementType): FiberNode {
 
 	const fiber = new FiberNode(fiberTag, props, key);
 	fiber.type = type;
+	return fiber;
+}
+
+export function createFiberFromFragment(elements: any[], key: Key): FiberNode {
+	const fiber = new FiberNode(Fragment, { children: elements }, key);
 	return fiber;
 }

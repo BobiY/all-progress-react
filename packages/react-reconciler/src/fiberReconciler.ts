@@ -2,7 +2,7 @@
  * File: fiberReconciler.ts
  * Created Date: 2023-02-22 20:00:44
  * Author: yao
- * Last Modified: 2023-03-22 19:57:01
+ * Last Modified: 2023-04-05 17:16:15
  * describe：
  */
 import { Container } from 'hostConfig';
@@ -16,6 +16,7 @@ import {
 } from './updateQueue';
 import { ReactElementType } from 'shared/ReactTypes';
 import { scheduleUpdateOnFiber } from './workLoop';
+import { requestUpdateLane } from './fiberLanes';
 
 // createRoot(container) 执行的方法
 // 创建了一个 hostRoot 对应的 fiber 和 一个 FiberRootNode
@@ -38,7 +39,8 @@ export function updateContainer(
 	// 指的是应用的根节点对应的fiber 节点
 	const hostRootFiber = rootFiber.current;
 	// 创建一个更新 action
-	const update = createUpdate<ReactElementType | null>(element);
+	const lane = requestUpdateLane();
+	const update = createUpdate<ReactElementType | null>(element, lane);
 	// 将此更新加入 更新队列中
 	// 将 update 插入队列中等待执行
 	enqueueUpdate(
@@ -47,7 +49,7 @@ export function updateContainer(
 	);
 
 	// 开始 reconciler 阶段
-	scheduleUpdateOnFiber(hostRootFiber);
+	scheduleUpdateOnFiber(hostRootFiber, lane);
 	return element;
 }
 

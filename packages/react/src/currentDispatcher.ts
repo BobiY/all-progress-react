@@ -3,12 +3,13 @@ import { Action } from '../../shared/ReactTypes';
  * File: currentDispatcher.ts
  * Created Date: 2023-03-21 22:23:54
  * Author: yao
- * Last Modified: 2023-03-21 22:37:28
+ * Last Modified: 2023-04-12 23:04:16
  * describe：当前使用的 hooks 的集合
  */
 
 export interface Dispatcher {
 	useState: <T>(initalState: (() => T) | T) => [T, Dispatch<T>];
+	useEffect: (callback: () => any | void, deps: any[] | void) => void;
 }
 
 export type Dispatch<State> = (action: Action<State>) => void;

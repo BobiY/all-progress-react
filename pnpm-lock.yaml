@@ -14,6 +14,7 @@ importers:
       '@rollup/plugin-replace': ^5.0.2
       '@types/react': ^18.0.24
       '@types/react-dom': ^18.0.8
+      '@types/scheduler': ^0.16.3
       '@typescript-eslint/eslint-plugin': ^5.52.0
       '@typescript-eslint/parser': ^5.52.0
       '@vitejs/plugin-react': ^2.2.0
@@ -30,12 +31,14 @@ importers:
       rollup-plugin-generate-package-json: ^3.2.0
       rollup-plugin-typescript: ^1.0.1
       rollup-plugin-typescript2: ^0.34.1
+      scheduler: ^0.23.0
       typescript: ^4.9.5
       vite: ^3.2.3
     dependencies:
       '@rollup/plugin-alias': 4.0.3_rollup@3.15.0
       '@rollup/plugin-replace': 5.0.2_rollup@3.15.0
       rollup-plugin-generate-package-json: 3.2.0_rollup@3.15.0
+      scheduler: 0.23.0
     devDependencies:
       '@babel/core': 7.21.3
       '@babel/plugin-transform-react-jsx': 7.21.0_@babel+core@7.21.3
@@ -45,6 +48,7 @@ importers:
       '@rollup/plugin-commonjs': 24.0.1_rollup@3.15.0
       '@types/react': 18.0.28
       '@types/react-dom': 18.0.11
+      '@types/scheduler': 0.16.3
       '@typescript-eslint/eslint-plugin': 5.52.0_6cfvjsbua5ptj65675bqcn6oza
       '@typescript-eslint/parser': 5.52.0_7kw3g6rralp5ps6mg3uyzz6azm
       '@vitejs/plugin-react': 2.2.0_vite@3.2.5
@@ -2048,12 +2052,12 @@ packages:
     resolution: {integrity: sha512-RD0ivG1kEztNBdoAK7lekI9M+azSnitIn85h4iOiaLjaTrMjzslhaqCGaI4IyCJ1RljWiLCEu4jyrLLgqxBTew==}
     dependencies:
       '@types/prop-types': 15.7.5
-      '@types/scheduler': 0.16.2
+      '@types/scheduler': 0.16.3
       csstype: 3.1.1
     dev: true
 
-  /@types/scheduler/0.16.2:
-    resolution: {integrity: sha1-GmL4lSVyPd4kuhsBsJK/XfitTTk=}
+  /@types/scheduler/0.16.3:
+    resolution: {integrity: sha512-5cJ8CB4yAx7BH1oMvdU0Jh9lrEXyPkar6F9G/ERswkCuvP4KQZfZkSjcMbAICCpQTN4OuZn8tz0HiKv9TGZgrQ==}
     dev: true
 
   /@types/semver/7.3.13:
@@ -4468,6 +4472,13 @@ packages:
     resolution: {integrity: sha1-Z5WRxWTDv/quhFTPCz3zcMPWkRw=}
     dev: true
 
+  /loose-envify/1.4.0:
+    resolution: {integrity: sha1-ce5R+nvkyuwaY4OffmgtgTLTDK8=}
+    hasBin: true
+    dependencies:
+      js-tokens: 4.0.0
+    dev: false
+
   /lru-cache/5.1.1:
     resolution: {integrity: sha1-HaJ+ZxAnGUdpXa9oSOhH8B2EuSA=}
     dependencies:
@@ -5122,6 +5133,12 @@ packages:
     dependencies:
       xmlchars: 2.2.0
     dev: true
+
+  /scheduler/0.23.0:
+    resolution: {integrity: sha512-CtuThmgHNg7zIZWAXi3AsyIzA3n4xx7aNyjwC2VJldO2LMVDhFK+63xGqq6CsJH4rTAt6/M+N4GhZiDYPx9eUw==}
+    dependencies:
+      loose-envify: 1.4.0
+    dev: false
 
   /semver/5.7.1:
     resolution: {integrity: sha1-qVT5Ma66UI0we78Gnv8MAclhFvc=}

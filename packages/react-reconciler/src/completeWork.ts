@@ -1,8 +1,9 @@
+import { Update } from './fiberFlags';
 /**
  * File: completeWork.ts
  * Created Date: 2023-02-21 21:02:37
  * Author: yao
- * Last Modified: 2023-03-25 10:36:14
+ * Last Modified: 2023-04-05 16:04:19
  * describe：DFS 遍历节点 归 的过程
  */
 
@@ -17,9 +18,15 @@ import {
 	HostComponent,
 	HostText,
 	HostRoot,
-	FunctionComponent
+	FunctionComponent,
+	Fragment
 } from './workTags';
 import { FiberNode } from './fiber';
+import { updateFiberProps } from 'react-dom/src/syntheticEvent';
+
+function markUpdate(fiber: FiberNode) {
+	fiber.flags |= Update;
+}
 
 export const completeWork = (wip: FiberNode) => {
 	const newProps = wip.pendingProps;
@@ -29,6 +36,10 @@ export const completeWork = (wip: FiberNode) => {
 		case HostComponent:
 			if (current !== null && wip.stateNode) {
 				// update
+				// 遍历属性是否变化
+				// 1. props 是否变化
+				// 2. 变了 Update Flag
+				updateFiberProps(wip.stateNode, newProps);
 			} else {
 				// mount
 				// 1. 构建 DOM
@@ -42,6 +53,11 @@ export const completeWork = (wip: FiberNode) => {
 		case HostText:
 			if (current !== null && wip.stateNode) {
 				// update
+				const oldText = current.memoizedProps.content;
+				const newText = newProps.content;
+				if (oldText !== newText) {
+					markUpdate(wip);
+				}
 			} else {
 				// mount
 				// 1. 构建 DOM
@@ -51,13 +67,10 @@ export const completeWork = (wip: FiberNode) => {
 			bubbleProperties(wip);
 			return null;
 		case HostRoot:
-			bubbleProperties(wip);
-			return null;
-
 		case FunctionComponent:
+		case Fragment:
 			bubbleProperties(wip);
 			return null;
-
 		default:
 			if (__DEV__) {
 				console.log('未处理的 completeWork 的情况');
